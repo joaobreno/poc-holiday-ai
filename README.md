@@ -4,11 +4,24 @@ Prova de Conceito (PoC) experimental em Python Notebook para otimização da pro
 
 ## 🎯 Objetivo
 
-Otimizar a alocação de dias de férias maximizando o período contínuo de descanso, considerando:
-- Dias úteis (segunda a sexta)
-- Fins de semana (sábado e domingo)
-- Feriados nacionais
-- Feriados "imprensados" (pontes)
+**Input:** Número de dias corridos de férias desejados (ex: "Quero 10 dias de férias")
+
+**Output:** Encontrar a janela de 10 dias corridos que **maximiza** o período total de folga, aproveitando fins de semana e feriados adjacentes.
+
+### Exemplo
+
+- Input: 10 dias corridos de férias
+- Janela selecionada: 18/fev a 27/fev (10 dias corridos)
+- **Aproveita antes:** 14-15/fev (fim de semana) + 16-17/fev (Carnaval) = 4 dias bônus
+- **Período TOTAL de folga:** 14/fev a 27/fev = **14 dias totais!**
+- **Resultado:** Você tira 10 dias corridos e folga 14 dias consecutivos!
+
+### Como funciona
+
+1. Você escolhe quantos dias corridos quer tirar de férias (ex: 10 dias)
+2. O modelo encontra a melhor janela de 10 dias no calendário
+3. Expande para trás e para frente aproveitando fins de semana e feriados adjacentes
+4. **Você folga mais dias do que tirou!**
 
 ## 🚀 Instalação
 
@@ -27,8 +40,9 @@ pip install -r requirements.txt
 
 Exemplo:
 ```python
-dias_solicitados = 15
-resultado = otimizar_ferias(dias_solicitados)
+# Quero 10 dias CORRIDOS de férias
+dias_corridos = 10
+resultado = otimizar_ferias(dias_corridos)
 ```
 
 ## 📋 Requisitos
@@ -42,15 +56,28 @@ resultado = otimizar_ferias(dias_solicitados)
 
 O problema é modelado como um problema de Programação Linear Inteira (MILP) com:
 
-- **Variáveis binárias**: Indicam quais dias úteis são usados como férias
+- **Variáveis binárias**: Indicam qual janela de N dias corridos é selecionada
+- **Pré-cálculo**: Para cada janela possível de N dias corridos:
+  1. Calcula quantos dias úteis ela consome
+  2. Expande para trás e para frente incluindo fins de semana/feriados adjacentes
+  3. Calcula o período TOTAL de folga resultante
 - **Restrições**: 
-  - Número exato de dias de férias solicitados
-  - Continuidade do bloco de férias
-- **Função objetivo**: Maximizar o período contínuo de descanso
+  - Apenas uma janela de N dias corridos selecionada
+  - Janela contínua de dias
+- **Função objetivo**: **MAXIMIZAR** o período total de folga (janela + adjacentes)
 
 ## 📝 Notas
 
 - Ano fixo: 2026
 - Feriados brasileiros configurados para 2026
-- Apenas um bloco contínuo de férias é considerado
-- Dias de férias consomem apenas dias úteis
+- Período contínuo de N dias corridos solicitados
+- Otimização: **maximizar período total de folga** aproveitando fins de semana e feriados adjacentes
+- O modelo garante que você folga mais dias do que solicitou!
+
+## 💡 Por que isso é útil?
+
+Em vez de escolher aleatoriamente quando tirar férias, o modelo encontra automaticamente:
+- O melhor período do ano para suas férias
+- Aproveita feriados próximos (como Carnaval, Páscoa, etc.)
+- Aproveita fins de semana adjacentes
+- **Maximiza seu descanso com o mesmo número de dias de férias!**
